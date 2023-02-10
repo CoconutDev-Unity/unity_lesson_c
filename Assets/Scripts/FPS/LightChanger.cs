@@ -8,10 +8,11 @@ public class LightChanger : MonoBehaviour
     [SerializeField] private Portal portal;
     [SerializeField] public new Light light;
     [SerializeField] public Material _lightBulbMaterial;
+    [SerializeField] private float _interpolationTime = 1f;
 
     void Start()
     {
-        Debug.Log(TurnOnInitialLight(3));
+        TurnOnInitialLight(3);
     }
 
     public void ChangeLightColor(Color color)
@@ -31,15 +32,16 @@ public class LightChanger : MonoBehaviour
 
     private IEnumerator WaitToTurnOnLight(Color color)
     {
-        Debug.Log("Before waiting");
-
-        yield return new WaitForSeconds(2);
-
-        _lightBulbMaterial.SetColor("_EmissionColor", light.color);
-        light.color = color;
-
-        Debug.Log("After waiting");
-
+        float t = 0f;
+        Color startColor = light.color;
+        while (t < 1)
+        {
+            Color interpolatedColor = Color.Lerp(startColor, color, t);
+            _lightBulbMaterial.SetColor("_EmissionColor", interpolatedColor);
+            light.color = interpolatedColor;
+            t += Time.deltaTime / _interpolationTime;
+            yield return null;
+        }
     }
 
     private string TurnOnInitialLight(int lightIndex)
