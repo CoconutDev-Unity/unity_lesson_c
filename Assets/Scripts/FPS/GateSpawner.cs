@@ -35,6 +35,8 @@ public class GateSpawner : MonoBehaviour
         List<MeshRenderer> _meshRenderers = new List<MeshRenderer>(gateGO.GetComponentsInChildren<MeshRenderer>());
         foreach (MeshRenderer meshRenderer in _meshRenderers)
         {
+            if (meshRenderer.GetComponent<LightSwitcher>() != null)
+                continue;
             meshRenderer.material.SetColor("_EmissionColor", randomColor);
         }
     }

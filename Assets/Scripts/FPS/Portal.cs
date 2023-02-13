@@ -22,7 +22,12 @@ public class Portal : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            _lightChanger.TurnOnLight(_lightColor);
+            TurnOnLightThroughPortal();
         }
+    }
+
+    public void TurnOnLightThroughPortal()
+    {
+        _lightChanger.TurnOnLight(_lightColor);
     }
 }
