@@ -7,6 +7,8 @@ public class Raycast : MonoBehaviour
     [SerializeField] private Camera _cam;
     [SerializeField] private float _raycastDist = 2f;
     [SerializeField] private LayerMask _raycastLayerMask;
+    [SerializeField] private bool _isOpen = false;
+
     void Update()
     {
         Debug.DrawLine(_cam.transform.position, _cam.transform.position + _cam.transform.forward * _raycastDist, Color.white);
@@ -20,10 +22,18 @@ public class Raycast : MonoBehaviour
                 {
                     lightSwitcher.TurnOnLight();
                 }
-            }
-            else
-            {
-                Debug.Log("We hit nothing");
+
+                if (hit.collider.TryGetComponent(out Animator animator) & !_isOpen)
+                {
+                    animator.SetTrigger("ToOpen");
+                    _isOpen = true;
+                }
+
+                if (hit.collider.TryGetComponent(out animator) & _isOpen)
+                {
+                    animator.SetTrigger("ToClose");
+                    _isOpen = false;
+                }
             }
         }
     }
