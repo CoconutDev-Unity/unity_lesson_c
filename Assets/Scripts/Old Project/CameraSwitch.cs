@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,5 +30,10 @@ public class CameraSwitch : MonoBehaviour
             isCube = false;
         }
 
+    }
+
+    internal void SetOtherCamera(Camera codeLockCamera)
+    {
+        throw new NotImplementedException();
     }
 }
