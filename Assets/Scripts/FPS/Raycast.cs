@@ -33,15 +33,12 @@ public class Raycast : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("1");
             RaycastHit hit;
 
             if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, _raycastDist, LayerMask.GetMask("DraggableObject")))
             {
-                Debug.Log("2");
                 if (hit.collider.TryGetComponent(out DraggableObject draggableObject))
                 {
-                    Debug.Log("3");
                     draggableObject.StartFollowingObject();
                     _currentlyDraggedObject = draggableObject;
                 }
@@ -50,17 +47,14 @@ public class Raycast : MonoBehaviour
 
         if (_currentlyDraggedObject != null)
         {
-            Debug.Log("4");
             Vector3 targetPosition = _cam.transform.position + _cam.transform.forward * _draggableObjectDistance;
             _currentlyDraggedObject.SetTargetPosition(targetPosition);
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            Debug.Log("5");
             if (_currentlyDraggedObject != null)
             {
-                Debug.Log("6");
                 _currentlyDraggedObject.StopFollowingObject();
                 _currentlyDraggedObject = null;
             }
