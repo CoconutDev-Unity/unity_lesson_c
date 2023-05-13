@@ -23,10 +23,9 @@ public class Raycast : MonoBehaviour
                 {
                     lightSwitcher.TurnOnLight();
                 }
-                
-                if (hit.collider.TryGetComponent(out CrateOpener crateOpener))
+                if (hit.collider.TryGetComponent(out IOpenable openable))
                 {
-                    crateOpener.openOrClose();
+                    openable.OpenOrClose();
                 }
             }
         }

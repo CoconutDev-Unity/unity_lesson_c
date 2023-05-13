@@ -19,7 +19,7 @@ public class FPSController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Jump();
         Debug.DrawLine(transform.position, transform.position + Vector3.down * _groundCheckDist, Color.red);

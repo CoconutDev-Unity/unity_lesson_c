@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Portal
   - Ground
+  - Place for ball
+  - Sphere
   layers:
   - Default
   - TransparentFX
