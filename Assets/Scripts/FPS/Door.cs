@@ -88,6 +88,17 @@ public class Door : MonoBehaviour, IOpenable
             StartCoroutine(Close());
         }
     }
+
+    public void Unlock()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Lock(CodeLock codeLock)
+    {
+        throw new NotImplementedException();
+    }
+
     //public void OpenOrClose()  -----OLD-----
     //{
     //    if (_isOpened)

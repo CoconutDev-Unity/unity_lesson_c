@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RackCase : MonoBehaviour, IOpenable
 {
+    private CodeLock _codeLock;
+    [SerializeField] private bool _canOpen = true;
     [SerializeField] private bool _isOpened;
     [SerializeField] public float _openCloseTime = 1f;
     private Vector3 _startPosition;
@@ -16,7 +18,6 @@ public class RackCase : MonoBehaviour, IOpenable
     {
         _startPosition = transform.position;
         _targetPosition = transform.position - transform.forward * _moveForwardBy;
-        //_targetPosition = transform.position - transform.right * _moveForwardBy;
     }
 
     IEnumerator Open()
@@ -41,7 +42,14 @@ public class RackCase : MonoBehaviour, IOpenable
 
     public void OpenOrClose()
     {
+        if (!_canOpen)
+        {
+            ZoomCameraToCodeLock();
+            return;
+        }
+
         _isOpened = !_isOpened;
+
         StopAllCoroutines();
 
         if (_isOpened)
@@ -50,6 +58,26 @@ public class RackCase : MonoBehaviour, IOpenable
         } else
         {
             StartCoroutine(Close());
+        }
+    }
+
+    private void ZoomCameraToCodeLock()
+    {
+        _codeLock.SetCodeLockCameraAsMain();
+    }
+
+    public void Unlock()
+    {
+        _canOpen = true;
+    }
+
+    public void Lock(CodeLock codeLock = null)
+    {
+        _canOpen = false;
+
+        if (codeLock != null)
+        {
+            _codeLock = codeLock;
         }
     }
 }
