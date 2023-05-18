@@ -7,7 +7,7 @@ using UnityEngine;
 public class DraggableObject : MonoBehaviour
 {
     private Rigidbody _rigidbody;
-    private Vector3 _intialScape;
+    private Vector3 _intialScale;
     [SerializeField] private Vector3 _targetPosition;
     [SerializeField] private bool _follow;
     [SerializeField] private float _followSpeed = 15f;
@@ -17,7 +17,7 @@ public class DraggableObject : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate() 
     {
         if (!_follow)
             return;

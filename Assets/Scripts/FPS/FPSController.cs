@@ -5,39 +5,37 @@ using UnityEngine;
 public class FPSController : MonoBehaviour
 {
     [SerializeField] private Rigidbody rig;
-    [SerializeField] private float speed = 1f;
+
+    [Header("Movement Speed Parameters")]
+    [SerializeField] private float walkingSpeed = 4;
+    [SerializeField] private float runningSpeed = 8;
+    private float walkRunLerp;
+    [SerializeField] private float walkToRunChangeSpeed = 0.5f;
+    [SerializeField] private float movementSpeed = 1;
+
+    [Header("Camera Parameters")]
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float mouseSensitivity = 2;
+
+    [Header("Jump Parameters")]
     [SerializeField] private float _jumpForce = 5;
-    [SerializeField] private float _groundCheckDist = 1f;
+    [SerializeField] private float _groundCheckDistance = 1f;
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        rig.maxAngularVelocity = 0;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
-        Jump();
-        Debug.DrawLine(transform.position, transform.position + Vector3.down * _groundCheckDist, Color.red);
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        TryJump();
+        TryRun();
+
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
-
-        Vector3 cameraForwardDir = cameraTransform.forward;
-        cameraForwardDir.y = 0;
-        Vector3 cameraRightDir = cameraTransform.right;
-        cameraRightDir.y = 0;
-
-        Vector3 movementDir = cameraForwardDir.normalized * vertical + cameraRightDir.normalized * horizontal;
-        movementDir = Vector3.ClampMagnitude(movementDir, 1) * speed;
-        rig.velocity = new Vector3(movementDir.x, rig.velocity.y, movementDir.z);
-
-        rig.angularVelocity = new Vector3(0, 0, 0);
 
         float newAngleX = cameraTransform.rotation.eulerAngles.x - mouseY * mouseSensitivity;
 
@@ -49,25 +47,55 @@ public class FPSController : MonoBehaviour
         newAngleX = Mathf.Clamp(newAngleX, -80, 80);
         cameraTransform.rotation = Quaternion.Euler(newAngleX, cameraTransform.rotation.eulerAngles.y, cameraTransform.rotation.eulerAngles.z);
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseX * mouseSensitivity, transform.rotation.eulerAngles.z);
-
-        if (Input.GetKey(KeyCode.LeftShift) & Input.GetKey(KeyCode.W))
-        {
-            speed = 12;
-        }
-        else
-        {
-            speed = 6;
-        }
     }
 
-    private void Jump()
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        Debug.DrawLine(transform.position, transform.position + Vector3.down * _groundCheckDistance, Color.red);
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        Vector3 cameraForwardDir = cameraTransform.forward;
+        cameraForwardDir.y = 0;
+        Vector3 cameraRightDir = cameraTransform.right;
+        cameraRightDir.y = 0;
+
+        Vector3 movementDir = cameraForwardDir.normalized * vertical + cameraRightDir.normalized * horizontal;
+        movementDir = Vector3.ClampMagnitude(movementDir, 1) * movementSpeed;
+        rig.velocity = new Vector3(movementDir.x, rig.velocity.y, movementDir.z);
+
+        rig.angularVelocity = new Vector3(0, 0, 0);
+    }
+
+    private void TryJump()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(Physics.Raycast(transform.position, Vector3.down, _groundCheckDist, LayerMask.GetMask("Default")))
+            if (Physics.Raycast(transform.position, Vector3.down, _groundCheckDistance, LayerMask.GetMask("Default")))
             {
                 rig.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             }
         }
+    }
+
+    private void TryRun()
+    {
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W))
+        {
+            if (walkRunLerp < 1)
+            {
+                walkRunLerp += Time.deltaTime / walkToRunChangeSpeed;
+            }
+        }
+        else
+        {
+            if (walkRunLerp > 0)
+            {
+                walkRunLerp -= Time.deltaTime / walkToRunChangeSpeed;
+            }
+        }
+
+        movementSpeed = Mathf.Lerp(walkingSpeed, runningSpeed, walkRunLerp);
     }
 }

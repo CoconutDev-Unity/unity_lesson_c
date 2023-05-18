@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class Raycast : MonoBehaviour
 {
-    [SerializeField] private Camera _cam;
-    [SerializeField] private float _raycastDist = 2f;
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private float _raycastDistance = 2f;
     [SerializeField] private LayerMask _raycastLayerMask;
     private DraggableObject _currentlyDraggedObject = null;
     [SerializeField] private float _draggableObjectDistance = 2f;
 
     void Update()
     {
-        Debug.DrawLine(_cam.transform.position, _cam.transform.position + _cam.transform.forward * _raycastDist, Color.white);
+        Debug.DrawLine(_mainCamera.transform.position, _mainCamera.transform.position + _mainCamera.transform.forward * _raycastDistance, Color.white);
 
         if (Input.GetKeyDown(KeyCode.F))
         {
             RaycastHit hit;
-            if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, _raycastDist, _raycastLayerMask))
+            if (Physics.Raycast(_mainCamera.transform.position, _mainCamera.transform.forward, out hit, _raycastDistance, _raycastLayerMask))
             {
                 if (hit.collider.TryGetComponent(out LightSwitcher lightSwitcher))
                 {
                     lightSwitcher.TurnOnLight();
                 }
-                if (hit.collider.TryGetComponent(out IOpenable openable))
+                if (hit.collider.TryGetComponent(out OpenableObject openable))
                 {
                     openable.OpenOrClose();
                 }
@@ -34,7 +34,7 @@ public class Raycast : MonoBehaviour
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, _raycastDist, LayerMask.GetMask("DraggableObject")))
+            if (Physics.Raycast(_mainCamera.transform.position, _mainCamera.transform.forward, out hit, _raycastDistance, LayerMask.GetMask("DraggableObject")))
             {
                 if (hit.collider.TryGetComponent(out DraggableObject draggableObject))
                 {
@@ -46,7 +46,7 @@ public class Raycast : MonoBehaviour
 
         if (_currentlyDraggedObject != null)
         {
-            Vector3 targetPosition = _cam.transform.position + _cam.transform.forward * _draggableObjectDistance;
+            Vector3 targetPosition = _mainCamera.transform.position + _mainCamera.transform.forward * _draggableObjectDistance;
             _currentlyDraggedObject.SetTargetPosition(targetPosition);
         }
 
