@@ -88,7 +88,7 @@ public class FPSController : MonoBehaviour
                 walkRunLerp += Time.deltaTime / walkToRunChangeSpeed;
             }
         }
-        else
+        else 
         {
             if (walkRunLerp > 0)
             {

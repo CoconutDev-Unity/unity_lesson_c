@@ -5,7 +5,7 @@ using UnityEngine;
 public class OpenableObject : MonoBehaviour
 {
     protected CodeLock _codeLock;
-    [SerializeField] private bool _canOpen = true;
+    [SerializeField] public bool canOpen = true;
     [SerializeField] private bool _isOpened;
     [SerializeField] protected float _openCloseTime = 1f;
     protected float openToCloseLerp;
@@ -22,7 +22,7 @@ public class OpenableObject : MonoBehaviour
 
     public void OpenOrClose()
     {
-        if (!_canOpen)
+        if (!canOpen)
         {
             ZoomCameraToCodeLock();
             return;
@@ -49,12 +49,12 @@ public class OpenableObject : MonoBehaviour
 
     public void Unlock()
     {
-        _canOpen = true;
+        canOpen = true;
     }
 
     public void Lock(CodeLock codeLock)
     {
-        _canOpen = false;
+        canOpen = false;
 
         if (codeLock != null)
         {
