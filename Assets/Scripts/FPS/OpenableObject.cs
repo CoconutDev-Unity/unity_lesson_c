@@ -22,7 +22,7 @@ public class OpenableObject : MonoBehaviour
 
     public void OpenOrClose()
     {
-        if (!canOpen)
+        if (!canOpen & _codeLock != null)
         {
             ZoomCameraToCodeLock();
             return;
